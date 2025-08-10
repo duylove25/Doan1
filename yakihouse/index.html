@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Gọi Món & Tính Bill</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Kiểm tra đăng nhập và phân quyền -->
+    <script>
+        const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+        if (isLoggedIn !== 'true') {
+            alert('Bạn cần đăng nhập để sử dụng hệ thống!');
+            window.location.href = 'login.html?redirect=index';
+        }
+    </script>
+
+    <div class="container">
+        <div class="header-logo">
+            <img src="image/logo.png" alt="Logo" />
+        </div>
+        <h1>Quản Lý Gọi Món & Thanh Toán</h1>
+
+        <div class="table-selection-section">
+            <h2>Chọn Bàn</h2>
+            <div id="tableList" class="table-grid">
+                <!-- Bàn sẽ được render bởi script.js -->
+            </div>
+            <p id="selectedTableInfo">Chưa chọn bàn nào.</p>
+        </div>
+
+        <div class="main-order-section">
+            <div class="menu-section">
+                <h2>Thực đơn</h2>
+                <div id="menuItems" class="menu-grid">
+                </div>
+            </div>
+
+            <div class="order-bill-section">
+                <h2>Đơn hàng bàn: <span id="currentTableName">Chưa chọn</span></h2>
+                <div class="order-summary">
+                    <ul id="orderList">
+                        <li class="empty-order-message">Chọn bàn và thêm món để bắt đầu order.</li>
+                    </ul>
+                    <p class="total-amount">Tổng cộng: <span id="totalAmount">0</span> VND</p>
+                    <button id="checkoutBtn" disabled>Thanh toán</button>
+                    <button id="cancelOrderBtn" disabled class="cancel-btn">Hủy Order</button>
+                </div>
+
+                <div class="bill-details">
+                    <h3>Chi tiết Bill</h3>
+                    <p>Tiền món: <span id="billSubtotal">0</span> VND</p>
+                    <p>Giảm giá:
+                        <input type="number" id="discountInput" value="0" min="0" max="100" style="width: 50px;"> %
+                        <span id="discountAmountSpan">(0 VND)</span>
+                    </p>
+                    <p class="final-total">Thành tiền: <span id="billTotalFinal">0</span> VND</p>
+                    <button id="confirmPaymentBtn" disabled>Xác nhận Thanh toán</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="top-right-nav">
+        <a href="staff.html" class="staff-manage-btn">🧑‍💼Quản Lý Nhân Viên</a>
+        <a href="revenue.html" class="nav-button revenue-button">📊 Báo Cáo Doanh thu</a>
+        <a href="add_dish.html" class="nav-button add-dish-button">➕Thêm Món Ăn</a>
+        <a href="#" class="nav-button delete-dish-button">❌Xóa Món Ăn</a>
+        <a href="#" class="nav-button edit-price-button yellow-button" id="openEditPriceBtn">💰Chỉnh Sửa Giá</a>
+        <a href="ingredients.html" class="nav-button ingredients-button">📦 Kho nguyên liệu</a>
+        <a href="#" class="nav-button logout-button" id="logoutBtn">🔒Đăng Xuất</a>
+    </div>
+
+    <!-- Modal chọn món để xóa -->
+    <div id="deleteDishModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h3>Chọn món để xóa</h3>
+            <ul id="dishDeleteList" class="dish-delete-list"></ul>
+            <button id="closeDeleteModal" class="modal-close-btn">Đóng</button>
+        </div>
+    </div>
+
+    
+    <script src="script.js"></script>
+
+    <!-- Modal hóa đơn -->
+    <div id="invoiceModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content" id="invoiceContent">
+            <h3>HÓA ĐƠN THANH TOÁN</h3>
+            <div id="invoiceDetails"></div>
+            <div style="text-align:center; margin-top: 15px;">
+                <button onclick="window.print()">🖨 In hóa đơn</button>
+                <button onclick="closeInvoiceModal()">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- jsPDF cho tính năng xuất PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- Modal chỉnh sửa giá bán -->
+    <div id="editPriceModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h3>Chỉnh Sửa Giá Món Ăn</h3>
+            <label for="editDishSelect">Chọn món ăn:</label>
+            <select id="editDishSelect" style="width: 100%; padding: 8px; margin-bottom: 10px;"></select>
+
+            <label for="newPriceInput">Giá mới (VND):</label>
+            <input type="number" id="newPriceInput" style="width: 100%; padding: 8px;" />
+
+            <button id="saveNewPriceBtn" class="save-price-btn">Lưu</button>
+            <button id="closeEditPriceBtn" class="modal-close-btn" style="margin-top: 10px;">Đóng</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            if (confirm("Bạn có chắc chắn muốn đăng xuất?")) {
+                sessionStorage.clear(); // Xóa toàn bộ session trên trình duyệt
+                window.location.href = "login.html"; // Quay về trang đăng nhập
+            }
+        });
+    }
+    });
+    </script>
+
+</body>
+</html>
