@@ -24,7 +24,6 @@
     table th {
       background-color: #f8f8f8;
     }
-    /* Thêm đoạn CSS này vào */
     .out-of-stock {
       color: red;
       font-weight: bold;
@@ -51,6 +50,32 @@
   </style>
 </head>
 <body>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const role = sessionStorage.getItem('role');
+
+      if (!role) {
+        alert('Bạn cần đăng nhập!');
+        window.location.href = 'login.html?redirect=ingredients';
+        return;
+      }
+
+      // Nếu role không thuộc nhóm được vào kho → chặn
+      if (!['Quản lý', 'Bếp', 'Bếp trưởng', 'Thu ngân'].includes(role)) {
+        document.body.innerHTML = '<p style="text-align:center; margin-top: 50px; font-size: 20px; color: red;">Bạn không có quyền truy cập trang Kho Nguyên Liệu.</p>';
+        return;
+      }
+
+      // Nếu không phải Quản lý → ẩn form nhập/xuất
+      if (role !== 'Quản lý') {
+        const formSection = document.getElementById('logForm');
+        if (formSection) formSection.style.display = 'none';
+        const formTitle = document.querySelector('.form-title');
+        if (formTitle) formTitle.style.display = 'none';
+      }
+    });
+  </script>
+
   <div class="container">
     <h1>Quản Lý Kho Nguyên Liệu</h1>
 
@@ -67,10 +92,10 @@
         </tr>
       </thead>
       <tbody>
-        </tbody>
+      </tbody>
     </table>
 
-    <h2>➕ Nhập/Xuất Kho</h2>
+    <h2 class="form-title">➕ Nhập/Xuất Kho</h2>
     <form id="logForm">
       <label for="ingredient-name">Tên nguyên liệu:</label>
       <input type="text" id="ingredient-name" name="ingredient_name" required>
