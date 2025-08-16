@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th8 05, 2025 lúc 04:11 PM
+-- Thời gian đã tạo: Th8 16, 2025 lúc 06:52 PM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.0.30
 
@@ -75,7 +75,7 @@ INSERT INTO `dishes` (`DishID`, `Name`, `Price`, `Category`, `ImagePath`) VALUES
 ('d684ecffb98fb4', 'Vú heo sốt cay', 90000.00, 'Món nướng', 'image/uploaded_dishes/vu-heo-cay.jpg'),
 ('m1', 'Bắp Bò', 80000.00, 'Món nướng', 'image/bapbo.jpg'),
 ('m10', 'Hàu nướng phô mai', 125000.00, 'Món nướng', 'image/haumai.jpg'),
-('m11', 'Cánh gà sốt cay', 125000.00, 'Món nướng', 'image/canhgasotcay.jpg'),
+('m11', 'Cánh gà sốt cay', 120000.00, 'Món nướng', 'image/canhgasotcay.jpg'),
 ('m12', 'Chân gà sốt cay Hàn Quốc', 125000.00, 'Món nướng', 'image/chan-ga-sot-cay-han-quoc.jpg'),
 ('m13', 'Sườn sụn heo sốt tiêu đen', 125000.00, 'Món nướng', 'image/suonsunheosottieuden.jpg'),
 ('m14', 'Lẩu kim chi', 159000.00, 'Món lẩu', 'image/laukimchi.jpg'),
@@ -119,10 +119,7 @@ CREATE TABLE `ingredients` (
 
 INSERT INTO `ingredients` (`id`, `name`, `unit`, `quantity`, `note`) VALUES
 (1, 'Thịt bò', 'kg', 10.00, 'Thịt bò Úc'),
-(2, 'Hành lá', 'kg', 1.00, 'Gia vị'),
-(3, 'Nước tương', 'lít', 15.00, 'Nước chấm'),
 (4, 'Đường', 'kg', 33.00, 'Gia vị'),
-(5, 'Tỏi', 'kg', 10.00, 'Gia vị'),
 (6, 'Thịt heo', 'kg', 32.00, 'các món nướng'),
 (7, 'bắp bò', 'kg', 10.00, 'cắt lát'),
 (8, 'Thịt gà', 'kg', 5.00, 'Cánh, má, đùi, chân'),
@@ -135,7 +132,6 @@ INSERT INTO `ingredients` (`id`, `name`, `unit`, `quantity`, `note`) VALUES
 (15, 'Nước tương', 'lít', 5.00, 'Dùng làm gia vị'),
 (16, 'Nước mắm', 'lít', 10.00, 'Gia vị chính'),
 (17, 'Dầu ăn', 'lít', 5.00, 'Dùng chiên, xào'),
-(18, 'Đường', 'kg', 3.00, 'Dùng nêm nếm'),
 (19, 'Muối', 'kg', 2.00, 'Dùng nêm nếm'),
 (20, 'Tiêu', 'kg', 1.00, 'Dùng nêm nếm'),
 (21, 'Chanh', 'kg', 2.00, 'Dùng pha nước chấm, gia vị'),
@@ -169,7 +165,8 @@ INSERT INTO `ingredients` (`id`, `name`, `unit`, `quantity`, `note`) VALUES
 (51, 'Mực hoa', 'kg', 9.00, ''),
 (52, 'Vú heo', 'kg', 25.00, ''),
 (53, 'Tôm thẻ', 'kg', 3.00, ''),
-(55, 'Hàu bịt', 'kg', 10.00, '');
+(57, 'Hàu bịt', 'kg', 2.00, ''),
+(59, 'Hạt nêm', 'kg', 3.00, '');
 
 -- --------------------------------------------------------
 
@@ -326,7 +323,31 @@ INSERT INTO `orderitems` (`OrderItemID`, `OrderID`, `DishID`, `Quantity`, `UnitP
 (647, 'ord6890bc30a5e36', 'd684ecae0eb972', 1, 0.00),
 (648, 'ord6890bc30a5e36', 'm8', 1, 0.00),
 (649, 'ord6890bc30a5e36', 'd684e9df5f15ca', 1, 0.00),
-(650, 'ord6890bc30a5e36', 'd684e9e2d9955c', 1, 0.00);
+(650, 'ord6890bc30a5e36', 'd684e9e2d9955c', 1, 0.00),
+(729, 'ord6899e0fbd8a90', 'buffet', 1, 199000.00),
+(730, 'ord6899e0fbd8a90', 'd684e9604721c0', 1, 0.00),
+(731, 'ord6899e0fbd8a90', 'd684e9e7addcd4', 1, 0.00),
+(732, 'ord6899e0fbd8a90', 'd684ecae0eb972', 1, 0.00),
+(733, 'ord6899e0fbd8a90', 'd684e9df5f15ca', 1, 0.00),
+(734, 'ord6899e0fbd8a90', 'd684e9e2d9955c', 1, 0.00),
+(735, 'ord6899e0fbd8a90', 'd684ecafa901d5', 1, 0.00),
+(736, 'ord6899e0fbd8a90', 'm13', 1, 0.00),
+(737, 'ord6899e0fbd8a90', 'd684e9d970c8de', 1, 0.00),
+(738, 'ord6899e0fbd8a90', 'd684e9ba30cb4b', 1, 0.00),
+(739, 'ord6899e0fbd8a90', 'd684e9cc9e8c62', 1, 0.00),
+(740, 'ord6899e0fbd8a90', 'm23', 1, 0.00),
+(741, 'ord6899e0fbd8a90', 'd684e97fc1e5ff', 1, 0.00),
+(797, 'ord6899e11de0cf7', 'm20', 1, 12000.00),
+(798, 'ord6899e11de0cf7', 'm18', 1, 12000.00),
+(799, 'ord6899e11de0cf7', 'm7', 1, 70000.00),
+(800, 'ord6899e11de0cf7', 'm4', 1, 80000.00),
+(801, 'ord6899e11de0cf7', 'm3', 1, 60000.00),
+(802, 'ord6899e11de0cf7', 'd684e9c420efb8', 1, 26000.00),
+(803, 'ord6899e11de0cf7', 'm1', 1, 80000.00),
+(804, 'ord6899e11de0cf7', 'm2', 1, 45000.00),
+(805, 'ord6899e11de0cf7', 'd684ecb1053a9a', 1, 90000.00),
+(806, 'ord6899e11de0cf7', 'm11', 1, 125000.00),
+(807, 'ord6899e11de0cf7', 'd684ecbfc1aeb4', 1, 80000.00);
 
 -- --------------------------------------------------------
 
@@ -373,7 +394,9 @@ INSERT INTO `orders` (`OrderID`, `TableID`, `CreatedAt`, `ENUM`, `Subtotal`, `Di
 ('ord687d0e5f53883', 'b9', '2025-07-20 22:42:23', 'paid', 106000.00, 0, 106000.00, 'nv1001'),
 ('ord687d113a59715', 'b3', '2025-07-20 22:54:34', 'paid', 248000.00, 0, 248000.00, 'nv1001'),
 ('ord687f7200e7f2a', 'b14', '2025-07-22 18:12:00', 'paid', 106000.00, 0, 106000.00, 'nv68487452e1adc'),
-('ord6890bc30a5e36', 'b20', '2025-08-04 20:57:04', 'paid', 199000.00, 0, 199000.00, 'nv1001');
+('ord6890bc30a5e36', 'b20', '2025-08-04 20:57:04', 'paid', 199000.00, 0, 199000.00, 'nv1001'),
+('ord6899e0fbd8a90', 'b9', '2025-08-11 19:24:27', 'paid', 199000.00, 0, 199000.00, 'nv1001'),
+('ord6899e11de0cf7', 'b20', '2025-08-11 19:25:01', 'paid', 680000.00, 0, 680000.00, 'nv1001');
 
 -- --------------------------------------------------------
 
@@ -395,7 +418,7 @@ CREATE TABLE `staffs` (
 --
 
 INSERT INTO `staffs` (`StaffID`, `Name`, `Code`, `Password`, `Position`, `Phone`) VALUES
-('nv1001', 'Tiến Duy', 'ad01', '123456', 'Quản lý', '0901000001'),
+('nv1001', 'Tiến Duy', 'ad01', '000000', 'Quản lý', '0901000001'),
 ('nv1002', 'Quyền Linh', 'tn02', '123456', 'Thu ngân', '0901000002'),
 ('nv1003', 'Nguyễn Tuấn Đạt', 'tn03', '123456', 'Thu ngân', '0901000003'),
 ('nv1004', 'Phú Thịnh', 'tn04', '123456', 'Thu ngân', '0901000004'),
@@ -517,7 +540,9 @@ INSERT INTO `transactions` (`TransactionID`, `OrderID`, `Amount`, `Timestamp`) V
 ('trans687d0e627aa43', 'ord687d0e5f53883', 106000.00, '2025-07-20 22:42:26'),
 ('trans687d1148618a1', 'ord687d113a59715', 248000.00, '2025-07-20 22:54:48'),
 ('trans687f7204aeb9f', 'ord687f7200e7f2a', 106000.00, '2025-07-22 18:12:04'),
-('trans6890bc4739c3e', 'ord6890bc30a5e36', 199000.00, '2025-08-04 20:57:27');
+('trans6890bc4739c3e', 'ord6890bc30a5e36', 199000.00, '2025-08-04 20:57:27'),
+('trans6899e108f12b9', 'ord6899e0fbd8a90', 199000.00, '2025-08-11 19:24:40'),
+('trans6899e13e20fba', 'ord6899e11de0cf7', 612000.00, '2025-08-11 19:25:34');
 
 --
 -- Chỉ mục cho các bảng đã đổ
@@ -533,7 +558,8 @@ ALTER TABLE `dishes`
 -- Chỉ mục cho bảng `ingredients`
 --
 ALTER TABLE `ingredients`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `name_unique` (`name`);
 
 --
 -- Chỉ mục cho bảng `ingredient_logs`
@@ -586,7 +612,7 @@ ALTER TABLE `transactions`
 -- AUTO_INCREMENT cho bảng `ingredients`
 --
 ALTER TABLE `ingredients`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
 
 --
 -- AUTO_INCREMENT cho bảng `ingredient_logs`
@@ -598,7 +624,7 @@ ALTER TABLE `ingredient_logs`
 -- AUTO_INCREMENT cho bảng `orderitems`
 --
 ALTER TABLE `orderitems`
-  MODIFY `OrderItemID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=651;
+  MODIFY `OrderItemID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=808;
 
 --
 -- Các ràng buộc cho các bảng đã đổ

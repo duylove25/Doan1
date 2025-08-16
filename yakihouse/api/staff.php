@@ -18,9 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $response['message'] = 'Không tìm thấy nhân viên nào.';
         $response['staffs'] = [];
     }
-}
-
-else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+} else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input = json_decode(file_get_contents('php://input'), true);
     $staffID = $input['id'] ?? null;
     $name = $input['name'] ?? '';
@@ -35,10 +33,9 @@ else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-
     if ($staffID) { // Cập nhật nhân viên
         $stmt = $conn->prepare("UPDATE Staffs SET Name = ?, Code = ?, Password = ?, Position = ?, Phone = ? WHERE StaffID = ?");
-        $stmt->bind_param("ssssss", $name, $code, $password, $position, $phone, $staffID); // $password nên là $hashed_password
+        $stmt->bind_param("ssssss", $name, $code, $password, $position, $phone, $staffID);
         if ($stmt->execute()) {
             $response['success'] = true;
             $response['message'] = 'Cập nhật nhân viên thành công!';
@@ -47,7 +44,6 @@ else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         $stmt->close();
     } else { // Thêm nhân viên mới
-      
         $check_stmt = $conn->prepare("SELECT StaffID FROM Staffs WHERE Code = ?");
         $check_stmt->bind_param("s", $code);
         $check_stmt->execute();
@@ -62,7 +58,7 @@ else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $newStaffID = 'nv' . uniqid();
         $stmt = $conn->prepare("INSERT INTO Staffs (StaffID, Name, Code, Password, Position, Phone) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("ssssss", $newStaffID, $name, $code, $password, $position, $phone); 
+        $stmt->bind_param("ssssss", $newStaffID, $name, $code, $password, $position, $phone);
         if ($stmt->execute()) {
             $response['success'] = true;
             $response['message'] = 'Thêm nhân viên thành công!';
@@ -80,7 +76,6 @@ else if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
     if (empty($staffID)) {
         $response['message'] = 'Vui lòng cung cấp ID nhân viên để xóa.';
     } else {
-     
         $check_stmt = $conn->prepare("SELECT COUNT(*) FROM Orders WHERE StaffID = ?");
         $check_stmt->bind_param("s", $staffID);
         $check_stmt->execute();
@@ -102,6 +97,47 @@ else if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
         }
     }
 }
+// Thêm khối xử lý cho PUT request tại đây
+else if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+    $input = json_decode(file_get_contents('php://input'), true);
+    $action = $input['action'] ?? '';
+
+    if ($action === 'change_password') {
+        $staffID = $input['staffId'] ?? '';
+        $currentPassword = $input['currentPassword'] ?? '';
+        $newPassword = $input['newPassword'] ?? '';
+        $response['message'] = 'Không có quyền truy cập.';
+
+        // Lấy mật khẩu hiện tại từ cơ sở dữ liệu
+        $stmt_check = $conn->prepare("SELECT Password FROM Staffs WHERE StaffID = ?");
+        $stmt_check->bind_param("s", $staffID);
+        $stmt_check->execute();
+        $result_check = $stmt_check->get_result();
+
+        if ($result_check->num_rows > 0) {
+            $staff = $result_check->fetch_assoc();
+            // Kiểm tra mật khẩu hiện tại
+            if ($currentPassword === $staff['Password']) {
+                // Cập nhật mật khẩu mới
+                $stmt_update = $conn->prepare("UPDATE Staffs SET Password = ? WHERE StaffID = ?");
+                $stmt_update->bind_param("ss", $newPassword, $staffID);
+                if ($stmt_update->execute()) {
+                    $response['success'] = true;
+                    $response['message'] = 'Mật khẩu đã được đổi thành công!';
+                } else {
+                    $response['message'] = 'Lỗi khi cập nhật mật khẩu: ' . $stmt_update->error;
+                }
+                $stmt_update->close();
+            } else {
+                $response['message'] = 'Mật khẩu hiện tại không chính xác.';
+            }
+        } else {
+            $response['message'] = 'Không tìm thấy người dùng.';
+        }
+        $stmt_check->close();
+    }
+}
+// Khối else cuối cùng và các câu lệnh đóng phải nằm ngoài các khối if
 else {
     $response['message'] = 'Phương thức yêu cầu không hợp lệ.';
 }

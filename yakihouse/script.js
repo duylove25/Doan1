@@ -865,3 +865,23 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (invoiceModal) invoiceModal.style.display = 'none';
     };
 });
+
+// --- Hamburger Menu Logic ---
+document.addEventListener('DOMContentLoaded', () => {
+    const hamburgerMenu = document.getElementById('hamburgerMenu');
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+
+    if (hamburgerBtn && hamburgerMenu) {
+        hamburgerBtn.addEventListener('click', (event) => {
+            event.stopPropagation(); // Ngăn sự kiện click lan ra ngoài
+            hamburgerMenu.classList.toggle('open');
+        });
+
+        // Đóng menu khi click ra bên ngoài
+        document.addEventListener('click', (event) => {
+            if (hamburgerMenu.classList.contains('open') && !hamburgerMenu.contains(event.target)) {
+                hamburgerMenu.classList.remove('open');
+            }
+        });
+    }
+});
