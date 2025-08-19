@@ -74,9 +74,19 @@
         <a href="#" class="nav-button delete-dish-button">❌ Xóa Món Ăn</a>
         <a href="#" class="nav-button edit-price-button" id="openEditPriceBtn">💰 Chỉnh Sửa Giá</a>
         <a href="ingredients.html" class="nav-button">📦 Kho nguyên liệu</a>
-         <a href="change_password.html" class="nav-button">🔑Đổi Mật Khẩu</a>
+        <a href="shifts_report.html" class="nav-button">📋 Quản lý ca làm việc</a>
+        <a href="change_password.html" class="nav-button">🔑Đổi Mật Khẩu</a>
         <a href="#" class="nav-button logout-button" id="logoutBtn">🔒 Đăng Xuất</a>
+        <div class="shift-info-section" style="text-align: center; margin-bottom: 20px;">
+            <p>Chào bạn, <strong id="staffNameDisplay"></strong>!</p>
+            <p>Trạng thái: <span id="shiftStatusDisplay" style="font-weight: bold;"></span></p>
+    <div class="shift-buttons">
+        <button id="checkInBtn" style="background-color: #28a745; display: none;">Check-in</button>
+        <button id="checkOutBtn" style="background-color: #dc3545; display: none;">Check-out</button>
     </div>
+</div>
+    </div>
+
 </div>
 
     <!-- Modal chọn món để xóa -->
@@ -127,8 +137,8 @@
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
             if (confirm("Bạn có chắc chắn muốn đăng xuất?")) {
-                sessionStorage.clear(); // Xóa toàn bộ session trên trình duyệt
-                window.location.href = "login.html"; // Quay về trang đăng nhập
+                sessionStorage.clear(); 
+                window.location.href = "login.html";
             }
         });
     }

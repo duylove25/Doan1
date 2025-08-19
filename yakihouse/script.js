@@ -885,3 +885,86 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+// ---Check-in/Check-out ---
+    const staffNameDisplay = document.getElementById('staffNameDisplay');
+    const shiftStatusDisplay = document.getElementById('shiftStatusDisplay');
+    const checkInBtn = document.getElementById('checkInBtn');
+    const checkOutBtn = document.getElementById('checkOutBtn');
+
+    const staffId = sessionStorage.getItem('staffId');
+    const staffName = sessionStorage.getItem('staffName');
+
+    if (staffId && staffName) {
+        staffNameDisplay.textContent = staffName;
+    }
+
+    // Hàm kiểm tra trạng thái ca làm hiện tại
+    async function checkShiftStatus() {
+        try {
+            const response = await fetch(`api/shifts.php?staffId=${staffId}`);
+            const result = await response.json();
+            if (result.success) {
+                if (result.shiftStatus === 'checked-in') {
+                    shiftStatusDisplay.textContent = 'Đã Check-in';
+                    shiftStatusDisplay.style.color = 'green';
+                    checkInBtn.style.display = 'none';
+                    checkOutBtn.style.display = 'inline-block';
+                } else {
+                    shiftStatusDisplay.textContent = 'Chưa Check-in';
+                    shiftStatusDisplay.style.color = 'red';
+                    checkInBtn.style.display = 'inline-block';
+                    checkOutBtn.style.display = 'none';
+                }
+            }
+        } catch (error) {
+            console.error('Lỗi khi kiểm tra trạng thái ca làm:', error);
+            shiftStatusDisplay.textContent = 'Lỗi kết nối';
+        }
+    }
+
+    // Xử lý Check-in
+    if (checkInBtn) {
+        checkInBtn.addEventListener('click', async () => {
+            try {
+                const response = await fetch('api/shifts.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ staffId: staffId })
+                });
+                const result = await response.json();
+                alert(result.message);
+                if (result.success) {
+                    checkShiftStatus();
+                }
+            } catch (error) {
+                console.error('Lỗi khi check-in:', error);
+                alert('Đã xảy ra lỗi khi check-in. Vui lòng thử lại.');
+            }
+        });
+    }
+
+    // Xử lý Check-out
+    if (checkOutBtn) {
+        checkOutBtn.addEventListener('click', async () => {
+            if (confirm('Bạn có muốn Check-out ca làm này không?')) {
+                try {
+                    const response = await fetch('api/shifts.php', {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ staffId: staffId })
+                    });
+                    const result = await response.json();
+                    alert(result.message);
+                    if (result.success) {
+                        checkShiftStatus();
+                    }
+                } catch (error) {
+                    console.error('Lỗi khi check-out:', error);
+                    alert('Đã xảy ra lỗi khi check-out. Vui lòng thử lại.');
+                }
+            }
+        });
+    }
+
+    // Hiển thị trạng thái ban đầu
+    checkShiftStatus();

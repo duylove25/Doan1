@@ -22,8 +22,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Xử lý hành động nhập kho (add)
     if ($action === 'add') {
-        // Sử dụng ON DUPLICATE KEY UPDATE để thêm mới nếu chưa có hoặc cập nhật nếu đã tồn tại
-        // Đảm bảo cột `name` trong bảng `ingredients` của bạn là UNIQUE KEY
         $stmt = $conn->prepare("INSERT INTO ingredients (name, unit, quantity, note) VALUES (?, ?, ?, ?)
                                 ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity), unit = VALUES(unit), note = VALUES(note)");
         $stmt->bind_param("ssis", $ingredientName, $ingredientUnit, $quantity, $note);

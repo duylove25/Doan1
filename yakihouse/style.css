@@ -837,3 +837,91 @@ button:disabled {
     background-color: #c82333;
 }
 
+/* Giao diện chung cho bảng */
+#shiftsTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Kiểu dáng tiêu đề bảng */
+#shiftsTable thead {
+    background-color: #007bff;
+    color: white;
+}
+
+#shiftsTable th {
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: bold;
+    border: 1px solid #dee2e6;
+}
+
+/* Kiểu dáng các hàng dữ liệu */
+#shiftsTable tbody tr {
+    border-bottom: 1px solid #dee2e6;
+    transition: background-color 0.3s ease;
+}
+
+#shiftsTable tbody tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+#shiftsTable tbody tr:hover {
+    background-color: #e2f2ff;
+}
+
+#shiftsTable td {
+    padding: 12px 15px;
+    border: 1px solid #dee2e6;
+}
+
+/* Căn lề cho cột Doanh thu */
+#shiftsTable td:nth-child(4) {
+    text-align: right;
+    font-weight: bold;
+    color: #28a745;
+}
+
+/* Kiểu dáng cho các nút và form lọc */
+.filter-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f1f5f9;
+    border-radius: 8px;
+}
+
+.filter-container label {
+    font-weight: 600;
+    color: #555;
+}
+
+.filter-container input[type="date"] {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+.filter-container button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#filterBtn {
+    background-color: #007bff;
+}
+
+#resetFilterBtn {
+    background-color: #6c757d;
+}

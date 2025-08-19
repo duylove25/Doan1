@@ -10,14 +10,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     const filterRevenueBtn = document.getElementById('filterRevenueBtn');
     const resetFilterBtn = document.getElementById('resetFilterBtn');
     const transactionListUl = document.getElementById('transactionList');
+    const ctx = document.getElementById('revenueChart').getContext('2d');
+    let revenueChart = null; // Biến để lưu instance biểu đồ
 
+    // Hàm định dạng tiền tệ
     function formatCurrency(amount) {
-        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+        return new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND'
+        }).format(amount);
     }
 
-    function isDateBetween(date, start, end) {
-        const transactionDate = new Date(date);
-        return transactionDate >= start && transactionDate <= end;
+    // Hàm kiểm tra quyền
+    const userRole = sessionStorage.getItem('role');
+    if (userRole !== 'Quản lý') {
+        alert('Bạn không có quyền truy cập vào trang này.');
+        window.location.href = 'index.html'; // Chuyển hướng về trang chính
     }
 
     async function loadAndDisplayRevenue(startDate = null, endDate = null) {
@@ -25,117 +33,152 @@ document.addEventListener('DOMContentLoaded', async () => {
         const params = new URLSearchParams();
         if (startDate) params.append('startDate', startDate.toISOString().split('T')[0]);
         if (endDate) params.append('endDate', endDate.toISOString().split('T')[0]);
-        if (params.toString()) apiUrl += '?' + params.toString();
+        
+        if (startDate || endDate) {
+            apiUrl += '?' + params.toString();
+        }
 
         try {
             const response = await fetch(apiUrl);
             const data = await response.json();
-            if (data.success) {
-                calculateAndDisplayRevenue(data.transactions);
+
+            let dailyRevenue = 0;
+            let weeklyRevenue = 0;
+            let monthlyRevenue = 0;
+            let yearlyRevenue = 0;
+            const now = new Date();
+            const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay()); 
+            const endOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() + (6 - now.getDay())); 
+            
+            const dailyRevenueData = {};
+
+            if (data.success && data.transactions.length > 0) {
+                transactionListUl.innerHTML = '';
+                
+                data.transactions.forEach(transaction => {
+                    const li = document.createElement('li');
+                    const transactionDate = new Date(transaction.Timestamp); 
+                    
+                    const formattedDateTime = transactionDate.toLocaleString('vi-VN', {
+                        year: 'numeric',
+                        month: 'numeric',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    
+                    li.innerHTML = `
+                        <strong>${formattedDateTime}</strong>
+                        ${transaction.TableName} -
+                        Tổng cộng: ${formatCurrency(transaction.Amount)}
+                    `;
+                    transactionListUl.appendChild(li);
+
+                    // Tính toán doanh thu tổng quan
+                    const amount = parseFloat(transaction.Amount);
+
+                    if (transactionDate.getDate() === now.getDate() && transactionDate.getMonth() === now.getMonth() && transactionDate.getFullYear() === now.getFullYear()) {
+                        dailyRevenue += amount;
+                    }
+                    if (transactionDate >= startOfWeek && transactionDate <= endOfWeek) {
+                        weeklyRevenue += amount;
+                    }
+                    if (transactionDate.getMonth() === now.getMonth() && transactionDate.getFullYear() === now.getFullYear()) {
+                        monthlyRevenue += amount;
+                    }
+                    if (transactionDate.getFullYear() === now.getFullYear()) {
+                        yearlyRevenue += amount;
+                    }
+
+                    // Tính toán dữ liệu cho biểu đồ
+                    const dateKey = transactionDate.toISOString().split('T')[0];
+                    if (!dailyRevenueData[dateKey]) {
+                        dailyRevenueData[dateKey] = 0;
+                    }
+                    dailyRevenueData[dateKey] += amount;
+                });
             } else {
-                console.error('Lỗi khi tải giao dịch:', data.message);
-                calculateAndDisplayRevenue([]);
+                transactionListUl.innerHTML = `<li class="empty-message">${data.message || 'Không có giao dịch nào được ghi nhận.'}</li>`;
             }
-        } catch (error) {
-            console.error('Lỗi kết nối API:', error);
-            calculateAndDisplayRevenue([]);
-            alert('Lỗi kết nối: Không thể tải dữ liệu doanh thu.');
-        }
-    }
 
-    function calculateAndDisplayRevenue(transactionsToProcess) {
-        const now = new Date();
-        now.setHours(0, 0, 0, 0);
-        let dailyRevenue = 0, weeklyRevenue = 0, monthlyRevenue = 0, yearlyRevenue = 0, totalFilteredRevenue = 0;
-        transactionListUl.innerHTML = '';
-        if (transactionsToProcess.length === 0) {
-            const li = document.createElement('li');
-            li.classList.add('empty-message');
-            li.textContent = 'Chưa có giao dịch nào được ghi nhận.';
-            transactionListUl.appendChild(li);
-        }
+            // Hiển thị tổng doanh thu đã lọc
+            if (data.success) {
+                const totalRevenue = data.transactions.reduce((sum, t) => sum + parseFloat(t.Amount), 0);
+                totalFilteredRevenueEl.textContent = formatCurrency(totalRevenue);
+            } else {
+                totalFilteredRevenueEl.textContent = formatCurrency(0);
+            }
 
-        const revenueByDate = {};
+            // Cập nhật doanh thu tổng quan
+            dailyRevenueEl.textContent = formatCurrency(dailyRevenue);
+            weeklyRevenueEl.textContent = formatCurrency(weeklyRevenue);
+            monthlyRevenueEl.textContent = formatCurrency(monthlyRevenue);
+            yearlyRevenueEl.textContent = formatCurrency(yearlyRevenue);
 
-        transactionsToProcess.forEach(transaction => {
-            const date = new Date(transaction.Timestamp);
-            const amount = parseFloat(transaction.Amount);
-            const dateStr = date.toLocaleDateString('vi-VN');
-            date.setHours(0, 0, 0, 0);
-
-            totalFilteredRevenue += amount;
-            if (date.toDateString() === now.toDateString()) dailyRevenue += amount;
-
-            const weekStart = new Date(now);
-            weekStart.setDate(now.getDate() - now.getDay());
-            weekStart.setHours(0, 0, 0, 0);
-            const weekEnd = new Date(weekStart);
-            weekEnd.setDate(weekStart.getDate() + 6);
-            weekEnd.setHours(23, 59, 59, 999);
-            if (isDateBetween(transaction.Timestamp, weekStart, weekEnd)) weeklyRevenue += amount;
-
-            if (date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear()) monthlyRevenue += amount;
-            if (date.getFullYear() === now.getFullYear()) yearlyRevenue += amount;
-
-            const li = document.createElement('li');
-            li.innerHTML = `<span>${date.toLocaleString('vi-VN')}</span> <span>${transaction.TableName}</span> <strong>${formatCurrency(amount)}</strong>`;
-            transactionListUl.appendChild(li);
-
-            revenueByDate[dateStr] = (revenueByDate[dateStr] || 0) + amount;
-        });
-
-        dailyRevenueEl.textContent = formatCurrency(dailyRevenue);
-        weeklyRevenueEl.textContent = formatCurrency(weeklyRevenue);
-        monthlyRevenueEl.textContent = formatCurrency(monthlyRevenue);
-        yearlyRevenueEl.textContent = formatCurrency(yearlyRevenue);
-        totalFilteredRevenueEl.textContent = formatCurrency(totalFilteredRevenue);
-
-        // Vẽ biểu đồ
-        const labels = Object.keys(revenueByDate).sort((a, b) => {
-            const da = new Date(a.split('/').reverse().join('-'));
-            const db = new Date(b.split('/').reverse().join('-'));
-            return da - db;
-        });
-        const values = labels.map(date => revenueByDate[date]);
-
-        if (window.revenueChartInstance) window.revenueChartInstance.destroy();
-
-        const ctx = document.getElementById('revenueChart')?.getContext('2d');
-        if (ctx) {
-            window.revenueChartInstance = new Chart(ctx, {
-                type: 'bar',
+            // Cập nhật biểu đồ doanh thu
+            if (revenueChart) {
+                revenueChart.destroy(); // Xóa biểu đồ cũ nếu có
+            }
+            
+            const labels = Object.keys(dailyRevenueData).sort();
+            const revenues = labels.map(key => dailyRevenueData[key]);
+            
+            revenueChart = new Chart(ctx, {
+                type: 'bar', // Hoặc 'line'
                 data: {
-                    labels,
+                    labels: labels,
                     datasets: [{
-                        label: 'Doanh thu theo ngày',
-                        data: values,
-                        backgroundColor: '#007bff',
-                        borderRadius: 5
+                        label: 'Doanh thu (VND)',
+                        data: revenues,
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
                     }]
                 },
                 options: {
                     responsive: true,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: ctx => formatCurrency(ctx.parsed.y)
-                            }
-                        }
-                    },
                     scales: {
                         y: {
                             beginAtZero: true,
-                            ticks: {
-                                callback: value => formatCurrency(value)
+                            title: {
+                                display: true,
+                                text: 'Doanh thu (VND)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Ngày'
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += formatCurrency(context.parsed.y);
+                                    }
+                                    return label;
+                                }
                             }
                         }
                     }
                 }
             });
+
+        } catch (error) {
+            console.error('Lỗi khi tải dữ liệu doanh thu:', error);
+            totalFilteredRevenueEl.textContent = formatCurrency(0);
+            transactionListUl.innerHTML = '<li class="empty-message">Đã xảy ra lỗi khi kết nối máy chủ.</li>';
         }
     }
 
+    // Xóa lịch sử giao dịch
     deleteHistoryBtn.addEventListener('click', async () => {
         if (confirm('Bạn có chắc chắn muốn xóa toàn bộ lịch sử doanh thu?')) {
             try {
@@ -157,6 +200,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
+    // Lọc doanh thu
     filterRevenueBtn.addEventListener('click', () => {
         const startDate = startDateInput.value ? new Date(startDateInput.value) : null;
         const endDate = endDateInput.value ? new Date(endDateInput.value) : null;
@@ -167,11 +211,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         loadAndDisplayRevenue(startDate, endDate);
     });
 
+    // Đặt lại bộ lọc
     resetFilterBtn.addEventListener('click', () => {
         startDateInput.value = '';
         endDateInput.value = '';
         loadAndDisplayRevenue();
     });
 
+    // Tải dữ liệu lần đầu khi trang được mở
     loadAndDisplayRevenue();
 });
