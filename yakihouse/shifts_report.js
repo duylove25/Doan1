@@ -65,11 +65,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     messageEl.textContent = '';
                     data.shifts.forEach(shift => {
                         const row = shiftsTableBody.insertRow();
-                        row.insertCell(0).textContent = shift.StaffName;
-                        row.insertCell(1).textContent = shift.CheckInTime;
-                        row.insertCell(2).textContent = shift.CheckOutTime ? shift.CheckOutTime : 'Chưa Check-out';
-                        row.insertCell(3).textContent = formatCurrency(shift.TotalRevenue);
-                    });
+                            row.insertCell(0).textContent = shift.StaffName;
+                            row.insertCell(1).textContent = shift.StaffCode;
+                            row.insertCell(2).textContent = shift.CheckInTime;
+                            row.insertCell(3).textContent = shift.CheckOutTime ? shift.CheckOutTime : 'Chưa Check-out';
+                            row.insertCell(4).textContent = formatCurrency(shift.TotalRevenue);
+                        });
                 } else {
                     messageEl.textContent = data.message;
                 }

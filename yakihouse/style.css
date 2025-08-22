@@ -879,14 +879,26 @@ button:disabled {
     border: 1px solid #dee2e6;
 }
 
-/* Căn lề cho cột Doanh thu */
+/* style cho các cột quản lý ca làm */
+#shiftsTable td:nth-child(3) {
+    text-align: right;
+    font-weight: bold;
+    color: #ff0000;
+}
 #shiftsTable td:nth-child(4) {
+    text-align: right;
+    font-weight: bold;
+    color: #ff0000;
+}
+
+#shiftsTable td:nth-child(5) {
     text-align: right;
     font-weight: bold;
     color: #28a745;
 }
 
-/* Kiểu dáng cho các nút và form lọc */
+
+/* Style các nút và form lọc */
 .filter-container {
     display: flex;
     align-items: center;

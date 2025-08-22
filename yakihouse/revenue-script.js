@@ -124,14 +124,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             const revenues = labels.map(key => dailyRevenueData[key]);
             
             revenueChart = new Chart(ctx, {
-                type: 'bar', // Hoặc 'line'
+                type: 'bar', 
                 data: {
                     labels: labels,
                     datasets: [{
                         label: 'Doanh thu (VND)',
                         data: revenues,
-                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(0, 80, 241, 0.85)',
+                        borderColor: 'rgba(0, 1, 74, 1)',
                         borderWidth: 1
                     }]
                 },

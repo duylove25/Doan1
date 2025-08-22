@@ -15,6 +15,7 @@ if ($request_method === 'GET') {
     $query = "
         SELECT 
             s.Name AS StaffName, 
+            s.Code AS StaffCode, 
             sh.CheckInTime, 
             sh.CheckOutTime,
             COALESCE(SUM(t.Amount), 0) AS TotalRevenue
