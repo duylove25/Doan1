@@ -1,24 +1,30 @@
 <?php
-//cấu hình kết nối cơ sở dữ liệu
-define('DB_SERVER', 'localhost'); 
-define('DB_USERNAME', 'root');   
-define('DB_PASSWORD', '');       
-define('DB_NAME', 'yakihouse');  
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-// Tạo kết nối
-$conn = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
+$DB_HOST = getenv('DB_HOST') ?: 'localhost';
+$DB_USER = getenv('DB_USER') ?: 'root';
+$DB_PASS = getenv('DB_PASS') ?: '';
+$DB_NAME = getenv('DB_NAME') ?: 'yakihouse';
+$DB_PORT = getenv('DB_PORT') ?: 3306;
 
 
-if ($conn->connect_error) {
+try {
+    $conn = new mysqli($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME, (int)$DB_PORT);
 
-    error_log("Connection failed: " . $conn->connect_error);
-    die("Connection failed: " . $conn->connect_error); 
+    // tránh lỗi ký tự tiếng Việt
+    if (! $conn->set_charset('utf8mb4')) {
+        $conn->query("SET NAMES utf8mb4");
+    }
+    $conn->query("SET collation_connection = 'utf8mb4_unicode_ci'");
+
+} catch (Throwable $e) {
+    http_response_code(500);
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode([
+        'success' => false,
+        'message' => 'Không thể kết nối CSDL',
+        'error'   => $e->getMessage(),
+    ]);
+    exit;
 }
 
-
-$conn->set_charset("utf8mb4");
-
-function close_db_connection($conn) {
-    $conn->close();
-}
-?>

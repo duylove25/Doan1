@@ -45,7 +45,7 @@ LEFT JOIN
         $types .= "s";
     }
 
-    // Thêm điều kiện lọc theo nhân viên nếu không phải quản lý
+    // Lọc theo nhân viên nếu không phải quản lý
     if ($role !== 'Quản lý' && $staffId) {
         $whereClauses[] = "sh.StaffID = ?";
         $params[] = $staffId;

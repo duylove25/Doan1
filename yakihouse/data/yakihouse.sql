@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th8 22, 2025 lúc 11:21 AM
+-- Thời gian đã tạo: Th8 23, 2025 lúc 01:18 PM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.0.30
 
@@ -95,7 +95,7 @@ INSERT INTO `dishes` (`DishID`, `Name`, `Price`, `Category`, `ImagePath`) VALUES
 ('m4', 'Bò cuộn phô mai', 80000.00, 'Món nướng', 'image/bomai.jpg'),
 ('m5', 'Mực tỉa', 77000.00, 'Món nướng', 'image/muctia.jpg'),
 ('m6', 'Râu mực', 89000.00, 'Món nướng', 'image/raumuc.jpg'),
-('m7', 'Bạch tuột Baby', 70000.00, 'Món nướng', 'image/btbaby.jpg'),
+('m7', 'Bạch tuột Baby', 71000.00, 'Món nướng', 'image/btbaby.jpg'),
 ('m8', 'Tôm sốt cay', 125000.00, 'Món nướng', 'image/tomcay.jpg'),
 ('m9', 'Hàu nướng mỡ hành', 125000.00, 'Món nướng', 'image/haunuongmohanh.jpg');
 
@@ -119,7 +119,7 @@ CREATE TABLE `ingredients` (
 
 INSERT INTO `ingredients` (`id`, `name`, `unit`, `quantity`, `note`) VALUES
 (1, 'Thịt bò', 'kg', 10.00, 'Thịt bò Úc'),
-(4, 'Đường', 'kg', 33.00, 'Gia vị'),
+(4, 'Đường', 'kg', 23.00, 'Gia vị'),
 (6, 'Thịt heo', 'kg', 32.00, 'các món nướng'),
 (7, 'bắp bò', 'kg', 10.00, 'cắt lát'),
 (8, 'Thịt gà', 'kg', 5.00, 'Cánh, má, đùi, chân'),
@@ -188,7 +188,8 @@ CREATE TABLE `ingredient_logs` (
 --
 
 INSERT INTO `ingredient_logs` (`id`, `ingredient_id`, `type`, `quantity`, `timestamp`, `note`) VALUES
-(2, 57, 'import', 2.00, '2025-08-22 15:46:38', '');
+(2, 57, 'import', 2.00, '2025-08-22 15:46:38', ''),
+(3, 4, 'export', 10.00, '2025-08-22 16:28:13', '');
 
 -- --------------------------------------------------------
 
@@ -476,7 +477,13 @@ INSERT INTO `orderitems` (`OrderItemID`, `OrderID`, `DishID`, `Quantity`, `UnitP
 (1665, 'ord68a8342e441d5', 'd684ecffb98fb4', 1, 0.00),
 (1666, 'ord68a8342e441d5', 'd684e9e2d9955c', 1, 0.00),
 (1667, 'ord68a8342e441d5', 'd684e9df5f15ca', 1, 0.00),
-(1668, 'ord68a8342e441d5', 'm8', 1, 0.00);
+(1668, 'ord68a8342e441d5', 'm8', 1, 0.00),
+(1670, 'ord68a99d11bdd80', 'm17', 1, 12000.00),
+(1671, 'ord68a99d11bdd80', 'm20', 1, 12000.00),
+(1678, 'ord68a9a0ac0c328', 'm17', 1, 12000.00),
+(1679, 'ord68a9a0ac0c328', 'm20', 1, 12000.00),
+(1680, 'ord68a9a0ac0c328', 'm18', 1, 12000.00),
+(1681, 'ord68a9a0ac0c328', 'm7', 1, 71000.00);
 
 -- --------------------------------------------------------
 
@@ -541,7 +548,9 @@ INSERT INTO `orders` (`OrderID`, `TableID`, `CreatedAt`, `ENUM`, `Subtotal`, `Di
 ('ord68a47d06c89cf', 'b13', '2025-08-19 20:32:54', 'paid', 36000.00, 0, 36000.00, 'nv1006'),
 ('ord68a82542ee0dd', 'b9', '2025-08-22 15:07:30', 'paid', 186000.00, 0, 186000.00, 'nv1001'),
 ('ord68a834204bb3a', 'b6', '2025-08-22 16:10:56', 'paid', 106000.00, 0, 106000.00, 'nv68487452e1adc'),
-('ord68a8342e441d5', 'b2', '2025-08-22 16:11:10', 'paid', 199000.00, 0, 199000.00, 'nv68487452e1adc');
+('ord68a8342e441d5', 'b2', '2025-08-22 16:11:10', 'paid', 199000.00, 0, 199000.00, 'nv68487452e1adc'),
+('ord68a99d11bdd80', 'b3', '2025-08-23 17:50:57', 'paid', 24000.00, 0, 24000.00, 'nv1001'),
+('ord68a9a0ac0c328', 'b3', '2025-08-23 18:06:20', 'paid', 107000.00, 0, 107000.00, 'nv1001');
 
 -- --------------------------------------------------------
 
@@ -568,7 +577,9 @@ INSERT INTO `shifts` (`ShiftID`, `StaffID`, `CheckInTime`, `CheckOutTime`) VALUE
 (14, 'nv1006', '2025-08-19 20:32:52', '2025-08-19 20:33:01'),
 (15, 'nv1006', '2025-08-19 20:33:44', '2025-08-19 20:33:55'),
 (16, 'nv1001', '2025-08-22 15:07:28', '2025-08-22 15:07:46'),
-(17, 'nv68487452e1adc', '2025-08-22 16:10:52', '2025-08-22 16:11:21');
+(17, 'nv68487452e1adc', '2025-08-22 16:10:52', '2025-08-22 16:11:21'),
+(18, 'nv1001', '2025-08-23 17:51:08', '2025-08-23 17:51:17'),
+(19, 'nv1001', '2025-08-23 18:06:17', '2025-08-23 18:06:33');
 
 -- --------------------------------------------------------
 
@@ -590,12 +601,12 @@ CREATE TABLE `staffs` (
 --
 
 INSERT INTO `staffs` (`StaffID`, `Name`, `Code`, `Password`, `Position`, `Phone`) VALUES
-('nv1001', 'Tiến Duy', 'ad01', '000000', 'Quản lý', '0901000001'),
+('nv1001', 'Tiến Duy', 'ad01', '$2y$10$VFb3TsAZmzvX7j81gCzp4urHE4m7L/TjBHRvFQkCxWVA21w6RG7lK', 'Quản lý', '0901000001'),
 ('nv1002', 'Quyền Linh', 'tn02', '123456', 'Thu ngân', '0901000002'),
 ('nv1003', 'Nguyễn Tuấn Đạt', 'tn03', '123456', 'Thu ngân', '0901000003'),
 ('nv1004', 'Phú Thịnh', 'tn04', '123456', 'Thu ngân', '0901000004'),
 ('nv1005', 'Tường Vy', 'tn05', '123456', 'Thu ngân', '0901000005'),
-('nv1006', 'Nguyễn Gia Khánh', 'nv06', '123456', 'Phục vụ', '0901000006'),
+('nv1006', 'Nguyễn Gia Khánh', 'nv06', '$2y$10$HztvtUAr7h9teeMBu/NMve0VA84qnv5o92HaGEw6Uv6YcK4D4FqzK', 'Phục vụ', '0901000006'),
 ('nv1007', 'Thanh Em', 'nv07', '123456', 'Phục vụ', '0901000007'),
 ('nv1008', 'Hoàng HIẾU', 'nv08', '123456', 'Phục vụ', '0901000008'),
 ('nv1009', 'Lê Kỳ', 'nv09', '123456', 'Phục vụ', '0901000009'),
@@ -730,7 +741,9 @@ INSERT INTO `transactions` (`TransactionID`, `OrderID`, `Amount`, `Timestamp`) V
 ('trans68a47d0996a6f', 'ord68a47d06c89cf', 36000.00, '2025-08-19 20:32:57'),
 ('trans68a825494bce7', 'ord68a82542ee0dd', 186000.00, '2025-08-22 15:07:37'),
 ('trans68a8342373d9f', 'ord68a834204bb3a', 106000.00, '2025-08-22 16:10:59'),
-('trans68a83433cc181', 'ord68a8342e441d5', 199000.00, '2025-08-22 16:11:15');
+('trans68a83433cc181', 'ord68a8342e441d5', 199000.00, '2025-08-22 16:11:15'),
+('trans68a99d1481b3a', 'ord68a99d11bdd80', 24000.00, '2025-08-23 17:51:00'),
+('trans68a9a0b28ed00', 'ord68a9a0ac0c328', 107000.00, '2025-08-23 18:06:26');
 
 --
 -- Chỉ mục cho các bảng đã đổ
@@ -813,19 +826,19 @@ ALTER TABLE `ingredients`
 -- AUTO_INCREMENT cho bảng `ingredient_logs`
 --
 ALTER TABLE `ingredient_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT cho bảng `orderitems`
 --
 ALTER TABLE `orderitems`
-  MODIFY `OrderItemID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1669;
+  MODIFY `OrderItemID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1682;
 
 --
 -- AUTO_INCREMENT cho bảng `shifts`
 --
 ALTER TABLE `shifts`
-  MODIFY `ShiftID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `ShiftID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- Các ràng buộc cho các bảng đã đổ
