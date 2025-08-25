@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const logForm = document.getElementById('logForm');
     const statusMessage = document.getElementById('statusMessage');
     const role = sessionStorage.getItem('role');
-
+    //Gọi API lấy danh sách nguyên liệu
     async function fetchAndRenderIngredients() {
         try {
             const response = await fetch('api/ingredients.php');
@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Gọi API lấy lịch sử nhập/xuất kho
     async function fetchAndRenderLogs() {
         try {
             const res = await fetch('api/ingredients.php?action=get_logs');
@@ -56,6 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Xử lý submit form nhập/xuất kho
     if (logForm) {
         logForm.addEventListener('submit', async (e) => {
             e.preventDefault();

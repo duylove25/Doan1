@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.location.href = 'index.html'; // Chuyển hướng về trang chính
     }
 
+    // Hàm tải và hiển thị doanh thu
     async function loadAndDisplayRevenue(startDate = null, endDate = null) {
         let apiUrl = 'api/transactions.php';
         const params = new URLSearchParams();

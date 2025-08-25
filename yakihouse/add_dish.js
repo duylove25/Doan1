@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
+    
     if (!addDishForm) return;
 
     addDishForm.addEventListener('submit', async (e) => {

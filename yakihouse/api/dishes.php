@@ -76,7 +76,7 @@ switch ($request_method) {
             }
         }
 
-        $dishID = 'd' . uniqid(); // Tạo ID duy nhất cho món ăn
+        $dishID = 'd' . uniqid(); // Tạo ID cho món ăn
         $stmt = $conn->prepare("INSERT INTO Dishes (DishID, Name, Price, Category, ImagePath) VALUES (?, ?, ?, ?, ?)");
         $stmt->bind_param("ssdss", $dishID, $name, $price, $category, $imagePath);
 
